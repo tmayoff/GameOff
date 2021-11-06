@@ -31,15 +31,26 @@ public class Ant : Enemy
 		Vector2 desiredSteeringForce = (desiredVelocity - rb.velocity) * steerStrength;
 		Vector2 acceleration = Vector2.ClampMagnitude(desiredSteeringForce, steerStrength) / 1;
 
-		velocity = Vector2.ClampMagnitude(velocity + acceleration * Time.deltaTime, maxSpeed);
+		rb.velocity = Vector2.ClampMagnitude(rb.velocity + acceleration * Time.deltaTime, maxSpeed);
 
 		float angle = Mathf.Atan2(velocity.y, velocity.x) * Mathf.Rad2Deg;
-		transform.position += (Vector3)velocity * Time.deltaTime;
 		transform.rotation = Quaternion.Euler(0, 0, angle);
 	}
 
-	public void UpdateTargetDirection()
-	{
 
+	private void OnParticleCollision(GameObject other)
+	{
+		switch (other.tag)
+		{
+			case "Water":
+				health -= 10;
+				break;
+		}
+
+		if (health <= 0)
+		{
+			Destroy(gameObject);
+		}
 	}
+
 }
